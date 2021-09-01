@@ -1,22 +1,21 @@
-from distutils.dir_util import copy_tree
 import os
-import sys
-import string
 import shutil
+import string
+import sys
+from distutils.dir_util import copy_tree
 
-if os.path.exists('../extension'):
-    shutil.rmtree('../extension')
-    os.remove('../extension.zip')
+CONST_SRC_DIR = './src'
+CONST_DIST_DIR = './dist'
+CONST_DIST_EXT_DIR = CONST_DIST_DIR + '/extension'
+
+if os.path.exists(CONST_DIST_DIR):
+    shutil.rmtree(CONST_DIST_DIR)
     print('Cleaning old stuff')
 
-os.makedirs('../extension')
-copy_tree('../YourAutoLiker', '../extension')
+os.makedirs(CONST_DIST_EXT_DIR)
+copy_tree(CONST_SRC_DIR, CONST_DIST_EXT_DIR)
 
 print('Copying the extension folder')
-
-shutil.rmtree('../extension/docs')
-os.remove('../extension/sendExtension.py')
-print('Removing website folder')
 
 
 def inplace_change(filename, old_string, new_string):
@@ -35,11 +34,11 @@ def inplace_change(filename, old_string, new_string):
         f.write(s)
 
 
-for root, dirs, files in os.walk("../extension"):
+for root, dirs, files in os.walk(CONST_DIST_EXT_DIR):
     for file in files:
-        if file.endswith(".js"):
+        if file.endswith('.js'):
             inplace_change(os.path.join(root, file),
                            'console.log', '//console.log')
 
-shutil.make_archive('../extension', 'zip', '../extension')
+shutil.make_archive('./dist/extension', 'zip', CONST_DIST_EXT_DIR)
 print('creating zip file')
